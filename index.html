@@ -1,12 +1,45 @@
 <!doctype HTML>
 <html>
 <head>
+	<title>Soluci&oacute;n</title>
 </head>
 <body>
 	<div style="margin-left: 70px; margin-right: 70px;">
-		<br/><br/><br/><br/><br/><br/><br/>
+		<br/><br/><br/>
 		<canvas id="lienzo" height="500px" width="1200px" style="border:2px solid #00d070;">
 			Your browser does not support the HTML5 canvas tag.
 		</canvas>
 	</div>
+	<script type="text/javascript">
+var lienzo = document.getElementById("lienzo");
+var pluma = lienzo.getContext("2d");
+var ymax = 500;
+var xmax = 1200;
+var puntos = [];
+function Punto() {
+	this.x = Math.random()*xmax;
+	this.y = Math.random()*ymax;
+}
+
+Punto.prototype.dibujar = function() {
+	pluma.fillStyle = "black";
+	pluma.beginPath();
+	pluma.arc(this.x,this.y,2,0,2*Math.PI);
+	pluma.arc(this.x,this.y,1,0,2*Math.PI);
+	pluma.stroke();
+};
+
+function comenzar() {
+	var n=0;
+	for (n=0; n<8; ++n){
+		puntos[n] = new Punto();
+	}
+	puntos.forEach( function (punto) {
+		punto.dibujar();
+	});
+}
+
+comenzar();
+
+	</script>
 </body>
