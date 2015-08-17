@@ -15,10 +15,11 @@ var lienzo = document.getElementById("lienzo");
 var pluma = lienzo.getContext("2d");
 var ymax = 500;
 var xmax = 1200;
-var record = 2000000000;
+var record = 90000;
 var puntos = [];
 var raxas = [];
 var rayas = [];
+
 function Punto() {
 	this.x = Math.random()*xmax;
 	this.y = Math.random()*ymax;
@@ -33,6 +34,13 @@ Punto.prototype.dibujar = function(num) {
 	pluma.fillText(num, this.x + 2, this.y);
 };
 
+function prod(list){
+	var sol=1;
+	for (var i = list.length - 1; i >= 0; i--) {
+		sol = sol * list[i];
+	}
+	return sol;
+}
 function draw(gr1, gr2){
 	var i;
 	for (i = 0; i < 7; ++i) {
@@ -103,35 +111,20 @@ function minima(points, graph1, graph2){
 	if (i==8){
 		suma(graph1, graph2);
 	} else {
-		if (points[0]==1){
-			points[0] = 0;
-			var g=0;
-			for (g=1; g<8; ++g){
-				points[g]=0;
-				graph1.push(0);
-				graph2.push(g);
-				minima(points, graph1, graph2);
-				graph1.pop();
-				graph2.pop();
-				points[g]=1;
-			}
-			points[0] = 1;
-		} else {
-			var j=0;
-			for (j=0; j<8; ++j){
-				if (points[j]==1){
-					for (k=0; k<8; ++k){
-						if (points[k]==0){
-							points[j] = 0;
-							graph1.push(j);
-							graph2.push(k);
-							minima(points, graph1, graph2);
-							graph1.pop();
-							graph2.pop();
-							points[j] = 1;
-						}
+		var j=0;
+		for (j=0; j<8; ++j){
+			if (points[j]==1){
+				points[j] = 0;
+				for (k=0; k<8; ++k){
+					if (points[k]==0 && k!=j){
+						graph1.push(j);
+						graph2.push(k);
+						minima(points, graph1, graph2);
+						graph1.pop();
+						graph2.pop();
 					}
 				}
+				points[j] = 1;
 			}
 		}
 	}
@@ -146,7 +139,7 @@ function comenzar() {
 	/*puntos.forEach( function (punto) {
 		punto.dibujar();
 	});*/
-	var poins = [1, 1, 1, 1, 1, 1, 1, 1];
+	var poins = [1, 1, 1, 1, 1, 1, 1, 0];
 	var li1 = [];
 	var li2 = [];
 	minima(poins, li1, li2);
