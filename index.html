@@ -41,6 +41,8 @@ function draw(gr1, gr2){
 		pluma.moveTo(puntos[gr1[i]].x,puntos[gr1[i]].y);
 		pluma.lineTo(puntos[gr2[i]].x,puntos[gr2[i]].y);
 		pluma.stroke();
+		pluma.fillText(gr1[i], 20, 20*(i + 1));
+		pluma.fillText(gr2[i], 40, 20*(i + 1));
 	}
 }
 function minimum(a, b){
