@@ -29,22 +29,11 @@ Punto.prototype.dibujar = function(num) {
 
 function prod(list){
 	var sol=1;
-	for (var i = list.length - 1; i >= 0; i--) {
+	var i=0;
+	while (i<list.length && sol!=0){
 		sol = sol * list[i];
 	}
 	return sol;
-}
-function draw(gr1, gr2){
-	var i;
-	for (i = 0; i < t - 1; ++i) {
-		pluma.fillStyle = "black";
-		pluma.beginPath();
-		pluma.moveTo(puntos[gr1[i]].x,puntos[gr1[i]].y);
-		pluma.lineTo(puntos[gr2[i]].x,puntos[gr2[i]].y);
-		pluma.stroke();
-		//pluma.fillText(gr1[i], 20, 20*(i + 1));
-		//pluma.fillText(gr2[i], 40, 20*(i + 1));
-	}
 }
 function minimum(a, b){
 	if (a<b){
@@ -52,6 +41,41 @@ function minimum(a, b){
 	} else {
 		return b;
 	}
+}
+function segm(c, d){
+	return Math.sqrt((puntos[c].x - puntos[d].x)*(puntos[c].x - puntos[d].x) + (puntos[c].y - puntos[d].y)*(puntos[c].y - puntos[d].y));
+}
+function dikjistra(start, g1, g2){
+	var dis = [];
+	var check = [];
+	for (var i=0; i<t; ++i){
+		check[i]=0;
+		dis[i]=20000;
+	}
+	dis[start]=0;
+	while (prod(check)==0){
+		var min=20000;
+		var pos = -1;
+		for (var i=0; i<t; ++i){
+			if (dis[i]<min && check[i]==0){
+				pos = i;
+				min = dis[i];
+			}
+		}
+		if (pos == -1){
+			return -1;
+		}
+		for (var i=0; i<t-1; ++i){
+			if (pos==g1[i] && check[g2[i]]==0){
+				dist[g2[i]] = minimum(dist[g2[i]], dist[pos] + seg(pos, g2[i]));
+			}
+			if (pos==g2[i] && check[g1[i]]==0){
+				dist[g1[i]] = minimum(dist[g1[i]], dist[pos] + seg(pos, g1[i]));
+			}
+		}
+		check[pos] = 1;
+	}
+	return sum(dis);
 }
 function dist(con2, c, d, g1, g2){
 	var v;
@@ -125,7 +149,7 @@ function minima(points, graph1, graph2){
 		}
 	}
 }
-/*function retwiddle(m, n, p){
+function retwiddle(m, n, p){
 	var i;
 	p[0] = n+1;
 	for(i = 1; i<n-m+1; i++){
@@ -139,7 +163,19 @@ function minima(points, graph1, graph2){
 	if(m == 0){
 		p[1] = 1;
 	}
-}*/
+}
+function draw(gr1, gr2){
+	var i;
+	for (i = 0; i < t - 1; ++i) {
+		pluma.fillStyle = "black";
+		pluma.beginPath();
+		pluma.moveTo(puntos[gr1[i]].x,puntos[gr1[i]].y);
+		pluma.lineTo(puntos[gr2[i]].x,puntos[gr2[i]].y);
+		pluma.stroke();
+		//pluma.fillText(gr1[i], 20, 20*(i + 1));
+		//pluma.fillText(gr2[i], 40, 20*(i + 1));
+	}
+}
 function comenzar() {
 	t = ventana.value;
 	forma.innerHTML = "<br/>";
@@ -151,7 +187,7 @@ function comenzar() {
 		puntos[n].dibujar(n);
 	}
 	var cumu=0;
-	/*for (n=0; n<t; ++n){
+	for (n=0; n<t; ++n){
 		var y=0;
 		for (y=0; y<n; y++){
 			lineas[cumu] = y;
@@ -160,7 +196,7 @@ function comenzar() {
 		}
 	}
 	var p = [];
-	retwiddle(t - 1, t*(t - 1)/2, p);*/
+	retwiddle(t - 1, t*(t - 1)/2, p);
 	var poins = [];
 	for (var u=0; u < t - 1; ++u){
 		poins[u]=1;
