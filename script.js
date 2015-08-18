@@ -6,7 +6,7 @@ var ymax = 500;
 var xmax = 1200;
 var t=8;
 var place = 0;
-var record = 90000;
+var record;
 var puntos = [];
 var lineas = [];
 var linias = [];
@@ -32,6 +32,14 @@ function prod(list){
 	var i=0;
 	while (i<list.length && sol!=0){
 		sol = sol * list[i];
+		i = i + 1;
+	}
+	return sol;
+}
+function sum(list){
+	var sol=0;
+	for (var i=0; i<list.length; ++i){
+		sol = sol + list[i];
 	}
 	return sol;
 }
@@ -42,7 +50,7 @@ function minimum(a, b){
 		return b;
 	}
 }
-function segm(c, d){
+function seg(c, d){
 	return Math.sqrt((puntos[c].x - puntos[d].x)*(puntos[c].x - puntos[d].x) + (puntos[c].y - puntos[d].y)*(puntos[c].y - puntos[d].y));
 }
 function dikjistra(start, g1, g2){
@@ -67,57 +75,30 @@ function dikjistra(start, g1, g2){
 		}
 		for (var i=0; i<t-1; ++i){
 			if (pos==g1[i] && check[g2[i]]==0){
-				dist[g2[i]] = minimum(dist[g2[i]], dist[pos] + seg(pos, g2[i]));
+				dis[g2[i]] = minimum(dis[g2[i]], dis[pos] + seg(pos, g2[i]));
 			}
 			if (pos==g2[i] && check[g1[i]]==0){
-				dist[g1[i]] = minimum(dist[g1[i]], dist[pos] + seg(pos, g1[i]));
+				dis[g1[i]] = minimum(dis[g1[i]], dis[pos] + seg(pos, g1[i]));
 			}
 		}
 		check[pos] = 1;
 	}
 	return sum(dis);
 }
-function dist(con2, c, d, g1, g2){
-	var v;
-	for (v=0; v < t - 1; ++v){
-		if (c==g1[v] && d==g2[v] || d==g1[v] && c==g2[v]){
-			return Math.sqrt((puntos[c].x - puntos[d].x)*(puntos[c].x - puntos[d].x) + (puntos[c].y - puntos[d].y)*(puntos[c].y - puntos[d].y));
-		}
-	}
-	var min=1700;
-	for (v=0; v < t - 1; ++v){
-		if (c==g1[v] && con2[v]==1){
-			con2[v]=0;
-			min = minimum(min, dist(con2, c, g2[v], g1, g2) + dist(con2, g2[v], d, g1, g2));
-			con2[v]=1;
-		}
-		if (c==g2[v] && con2[v]==1){
-			con2[v]=0;
-			min = minimum(min, dist(con2, c, g1[v], g1, g2) + dist(con2, g1[v], d, g1, g2));
-			con2[v]=1;
-		}
-	}
-	return min;
-}
 function suma(gra1, gra2){
-	var sum = 0;
+	var sum = dikjistra(0, gra1, gra2);
 	var count;
-	var cou;
-	for (count = 0; count<8; ++count){
-		for (cou = 0; cou<count; ++cou){
-			var conex = [];
-			for (var u=0; u<t; ++u){
-				conex[u] = 1;
+	if (sum != -1){
+		for (count = 1; count<t; ++count){
+			sum = sum + dikjistra(count, gra1, gra2);
+		}
+		if (sum<record){
+			for (var i=0; i < t-1; ++i){
+				raxas[i] = gra1[i];
+				rayas[i] = gra2[i];
 			}
-			sum = sum + dist(conex, cou, count, gra1, gra2);
+			record = sum;
 		}
-	}
-	if (sum<record){
-		for (var i=0; i < t - 1; ++i){
-			raxas[i] = gra1[i];
-			rayas[i] = gra2[i];
-		}
-		record = sum;
 	}
 }
 function minima(points, graph1, graph2){
@@ -178,9 +159,15 @@ function draw(gr1, gr2){
 }
 function comenzar() {
 	t = ventana.value;
-	forma.innerHTML = "<br/>";
+	//forma.innerHTML = "<br/>";
 	pluma.fillStyle = "white";
 	pluma.fillRect(0, 0, 1200, 500);
+	puntos = [];
+	lineas = [];
+	linias = [];
+	raxas = [];
+	rayas = [];
+	record = 90000
 	var n=0;
 	for (n=0; n<t; ++n){
 		puntos[n] = new Punto();
@@ -205,8 +192,8 @@ function comenzar() {
 	var li1 = [];
 	var li2 = [];
 	minima(poins, li1, li2);
-	draw(raxas, rayas);
 	pluma.fillText(record, 100, 40);
+	draw(raxas, rayas);
 }
 
 //comenzar();
