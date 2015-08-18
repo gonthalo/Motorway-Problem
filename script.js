@@ -142,7 +142,7 @@ function minima(points, graph1, graph2){
 }*/
 function comenzar() {
 	t = ventana.value;
-	forma.innerHTML = "";
+	forma.innerHTML = "<br/>";
 	pluma.fillStyle = "white";
 	pluma.fillRect(0, 0, 1200, 500);
 	var n=0;
