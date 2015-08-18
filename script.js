@@ -192,7 +192,14 @@ function comenzar() {
 	var li1 = [];
 	var li2 = [];
 	minima(poins, li1, li2);
-	pluma.fillText(record, 100, 40);
+	pluma.fillText("Distancia promedio:", 2, 40);
+	pluma.fillText(Math.floor(0.5*(record/linias.length + 1)), 100, 40);
+	pluma.fillText("pixeles", 120, 40);
+	pluma.fillText("100 pixeles", 30, 95);
+	pluma.beginPath();
+	pluma.moveTo(10, 100);
+	pluma.lineTo(110, 100);
+	pluma.stroke();
 	draw(raxas, rayas);
 }
 
