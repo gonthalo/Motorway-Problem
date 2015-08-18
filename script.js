@@ -145,6 +145,55 @@ function retwiddle(m, n, p){
 		p[1] = 1;
 	}
 }
+function twiddle(x, y, z, p) {
+	var i;
+	var j;
+	var k;
+	j = 1;
+	while(p[j] <= 0){
+		j = j + 1;
+	}
+	if(p[j-1] == 0) {
+		for(i = j-1; i != 1; --i){
+			p[i] = -1;
+		}
+		p[j] = 0;
+		x = 0;
+		z = 0;
+		p[1] = 1;
+		y = j-1;
+	} else {
+		if(j > 1) {
+			p[j-1] = 0;
+		}
+		while(p[j] > 0){
+			j = j + 1;
+		}
+		k = j-1;
+		i = j;
+		while(p[i] == 0){
+			p[i++] = -1;
+		}
+		if(p[i] == -1) {
+			p[i] = p[k];
+			z = p[k]-1;
+			x = i-1;
+			y = k-1;
+			p[k] = -1;
+		} else {
+			if(i == p[0]) {
+				return 1;
+			} else {
+				p[j] = p[i];
+				z = p[i]-1;
+				p[i] = 0;
+				x = j-1;
+				y = i-1;
+			}
+		}
+	}
+	return 0;
+}
 function draw(gr1, gr2){
 	var i;
 	for (i = 0; i < t - 1; ++i) {
