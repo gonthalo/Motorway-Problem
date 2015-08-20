@@ -8,6 +8,7 @@ var t=8;
 var place = 0;
 var record;
 var puntos = [];
+var con = [];
 var lineas = [];
 var linias = [];
 var raxas = [];
@@ -36,7 +37,7 @@ function prod(list){
 	}
 	return sol;
 }
-function sum(list){
+function sumar(list){
 	var sol=0;
 	for (var i=0; i<list.length; ++i){
 		sol = sol + list[i];
@@ -83,13 +84,12 @@ function dikjistra(start, g1, g2){
 		}
 		check[pos] = 1;
 	}
-	return sum(dis);
+	return sumar(dis);
 }
 function suma(gra1, gra2){
 	var sum = dikjistra(0, gra1, gra2);
-	var count;
 	if (sum != -1){
-		for (count = 1; count<t; ++count){
+		for (var count = 1; count < t; ++count){
 			sum = sum + dikjistra(count, gra1, gra2);
 		}
 		if (sum<record){
@@ -101,100 +101,31 @@ function suma(gra1, gra2){
 		}
 	}
 }
-function minima(points, graph1, graph2){
-	var i=0;
-	while (i<t){
-		if (points[i]==1){
-			i=t;
+function dfs(m, n, last){
+	if (m==0){
+		var output1 = [];
+		var output2 = [];
+		for(var i = 0; i < t - 1; i++) {
+			output1[i] = lineas[con[i]];
+			output2[i] = linias[con[i]];
 		}
-		i = i + 1;
-	}
-	if (i==t){
-		suma(graph1, graph2);
+		suma(output1, output2);
 	} else {
-		var j=0;
-		for (j=0; j<t; ++j){
-			if (points[j]==1){
-				points[j] = 0;
-				for (k=0; k<t; ++k){
-					if (points[k]==0 && k!=j){
-						graph1.push(j);
-						graph2.push(k);
-						minima(points, graph1, graph2);
-						graph1.pop();
-						graph2.pop();
-					}
-				}
-				points[j] = 1;
-			}
+		for(var i = last + 1; i < n; i++) {
+			con[m - 1] = i;
+			dfs(m - 1, n, i);
 		}
 	}
-}
-function retwiddle(m, n, p){
-	var i;
-	p[0] = n+1;
-	for(i = 1; i<n-m+1; i++){
-		p[i] = 0;
-	}
-  	while(i < n+1){
-		p[i] = i + m - n;
-		i = i + 1;
-	}
-	p[n+1] = -2;
-	if(m == 0){
-		p[1] = 1;
-	}
-}
-function twiddle(x, y, z, p) {
-	var i;
-	var j;
-	var k;
-	j = 1;
-	while(p[j] <= 0){
-		j = j + 1;
-	}
-	if(p[j-1] == 0) {
-		for(i = j-1; i != 1; --i){
-			p[i] = -1;
-		}
-		p[j] = 0;
-		x = 0;
-		z = 0;
-		p[1] = 1;
-		y = j-1;
-	} else {
-		if(j > 1) {
-			p[j-1] = 0;
-		}
-		while(p[j] > 0){
-			j = j + 1;
-		}
-		k = j-1;
-		i = j;
-		while(p[i] == 0){
-			p[i++] = -1;
-		}
-		if(p[i] == -1) {
-			p[i] = p[k];
-			z = p[k]-1;
-			x = i-1;
-			y = k-1;
-			p[k] = -1;
-		} else {
-			if(i == p[0]) {
-				return 1;
-			} else {
-				p[j] = p[i];
-				z = p[i]-1;
-				p[i] = 0;
-				x = j-1;
-				y = i-1;
-			}
-		}
-	}
-	return 0;
 }
 function draw(gr1, gr2){
+	pluma.fillText("Distancia promedio:", 2, 40);
+	pluma.fillText(Math.floor(0.5*(record/(t*(t-1)/2) + 1)), 100, 40);
+	pluma.fillText("pixeles", 120, 40);
+	pluma.fillText("100 pixeles", 30, 95);
+	pluma.beginPath();
+	pluma.moveTo(10, 100);
+	pluma.lineTo(110, 100);
+	pluma.stroke();
 	var i;
 	for (i = 0; i < t - 1; ++i) {
 		pluma.fillStyle = "black";
@@ -202,54 +133,31 @@ function draw(gr1, gr2){
 		pluma.moveTo(puntos[gr1[i]].x,puntos[gr1[i]].y);
 		pluma.lineTo(puntos[gr2[i]].x,puntos[gr2[i]].y);
 		pluma.stroke();
-		//pluma.fillText(gr1[i], 20, 20*(i + 1));
-		//pluma.fillText(gr2[i], 40, 20*(i + 1));
 	}
 }
 function comenzar() {
 	t = ventana.value;
-	//forma.innerHTML = "<br/>";
 	pluma.fillStyle = "white";
 	pluma.fillRect(0, 0, 1200, 500);
+	containers = [];
 	puntos = [];
 	lineas = [];
 	linias = [];
 	raxas = [];
 	rayas = [];
-	record = 90000
-	var n=0;
-	for (n=0; n<t; ++n){
+	record = 120000;
+	for (var n=0; n<t; ++n){
 		puntos[n] = new Punto();
 		puntos[n].dibujar(n);
 	}
 	var cumu=0;
-	for (n=0; n<t; ++n){
-		var y=0;
-		for (y=0; y<n; y++){
+	for (var n=0; n<t; ++n){
+		for (var y=0; y<n; ++y){
 			lineas[cumu] = y;
 			linias[cumu] = n;
-			cumu = cumu + 1;
+			cumu++;
 		}
 	}
-	var p = [];
-	retwiddle(t - 1, t*(t - 1)/2, p);
-	var poins = [];
-	for (var u=0; u < t - 1; ++u){
-		poins[u]=1;
-	}
-	poins[t-1]=0;
-	var li1 = [];
-	var li2 = [];
-	minima(poins, li1, li2);
-	pluma.fillText("Distancia promedio:", 2, 40);
-	pluma.fillText(Math.floor(0.5*(record/linias.length + 1)), 100, 40);
-	pluma.fillText("pixeles", 120, 40);
-	pluma.fillText("100 pixeles", 30, 95);
-	pluma.beginPath();
-	pluma.moveTo(10, 100);
-	pluma.lineTo(110, 100);
-	pluma.stroke();
+	dfs(t - 1, t*(t - 1)/2, -1);
 	draw(raxas, rayas);
 }
-
-//comenzar();
