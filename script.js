@@ -133,12 +133,14 @@ function draw(gr1, gr2){
 		pluma.moveTo(puntos[gr1[i]].x,puntos[gr1[i]].y);
 		pluma.lineTo(puntos[gr2[i]].x,puntos[gr2[i]].y);
 		pluma.stroke();
+		//pluma.fillText(gr1[i], 5 + 10*i, 160);
+		//pluma.fillText(gr2[i], 5 + 10*i, 170);
 	}
 }
 function comenzar() {
 	t = ventana.value;
 	pluma.fillStyle = "white";
-	pluma.fillRect(0, 0, 1200, 500);
+	pluma.fillRect(0, 0, xmax, ymax);
 	containers = [];
 	puntos = [];
 	lineas = [];
