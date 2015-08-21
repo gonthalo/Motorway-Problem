@@ -119,6 +119,10 @@ function dfs(m, n, last){
 	}
 }
 function draw(gr1, gr2){
+	if (record==120000){
+		pluma.fillText("No es posible conectar todos los puntos", 2, 40);
+		return;
+	}
 	pluma.fillText("Distancia promedio:", 2, 40);
 	pluma.fillText(Math.floor(0.5*(record/(t*(t-1)/2) + 1)), 100, 40);
 	pluma.fillText("pixeles", 120, 40);
