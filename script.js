@@ -1,10 +1,11 @@
 var ventana = document.getElementById("puntitos");
-var forma = document.getElementById("input");
+var ventana2 = document.getElementById("rayitas");
 var lienzo = document.getElementById("lienzo");
 var pluma = lienzo.getContext("2d");
 var ymax = 500;
 var xmax = 1200;
-var t=8;
+var t=7;
+var kerbal=6;
 var place = 0;
 var record;
 var puntos = [];
@@ -74,7 +75,7 @@ function dikjistra(start, g1, g2){
 		if (pos == -1){
 			return -1;
 		}
-		for (var i=0; i<t-1; ++i){
+		for (var i=0; i<g1.length; ++i){
 			if (pos==g1[i] && check[g2[i]]==0){
 				dis[g2[i]] = minimum(dis[g2[i]], dis[pos] + seg(pos, g2[i]));
 			}
@@ -93,7 +94,7 @@ function suma(gra1, gra2){
 			sum = sum + dikjistra(count, gra1, gra2);
 		}
 		if (sum<record){
-			for (var i=0; i < t-1; ++i){
+			for (var i=0; i < gra1.length; ++i){
 				raxas[i] = gra1[i];
 				rayas[i] = gra2[i];
 			}
@@ -105,13 +106,13 @@ function dfs(m, n, last){
 	if (m==0){
 		var output1 = [];
 		var output2 = [];
-		for(var i = 0; i < t - 1; i++) {
+		for(var i = 0; i < con.length; i++) {
 			output1[i] = lineas[con[i]];
 			output2[i] = linias[con[i]];
 		}
 		suma(output1, output2);
 	} else {
-		for(var i = last + 1; i < n; i++) {
+		for(var i = last + 1; i < n - m + 1; i++) {
 			con[m - 1] = i;
 			dfs(m - 1, n, i);
 		}
@@ -126,8 +127,7 @@ function draw(gr1, gr2){
 	pluma.moveTo(10, 100);
 	pluma.lineTo(110, 100);
 	pluma.stroke();
-	var i;
-	for (i = 0; i < t - 1; ++i) {
+	for (var i = 0; i < gr1.length; ++i) {
 		pluma.fillStyle = "black";
 		pluma.beginPath();
 		pluma.moveTo(puntos[gr1[i]].x,puntos[gr1[i]].y);
@@ -139,10 +139,13 @@ function draw(gr1, gr2){
 }
 function comenzar() {
 	t = ventana.value;
+	kerbal = ventana2.value;
+	pluma.fillText(kerbal, 7, 7);
 	pluma.fillStyle = "white";
 	pluma.fillRect(0, 0, xmax, ymax);
 	containers = [];
 	puntos = [];
+	con = [];
 	lineas = [];
 	linias = [];
 	raxas = [];
@@ -160,6 +163,6 @@ function comenzar() {
 			cumu++;
 		}
 	}
-	dfs(t - 1, t*(t - 1)/2, -1);
+	dfs(kerbal, t*(t - 1)/2, -1);
 	draw(raxas, rayas);
 }
