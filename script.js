@@ -143,20 +143,22 @@ function draw(gr1, gr2){
 }
 function comenzar() {
 	t = ventana.value;
-	kerbal = ventana2.value;
-	pluma.fillText(kerbal, 7, 7);
-	pluma.fillStyle = "white";
-	pluma.fillRect(0, 0, xmax, ymax);
-	containers = [];
 	puntos = [];
-	con = [];
 	lineas = [];
 	linias = [];
-	raxas = [];
-	rayas = [];
-	record = 120000;
 	for (var n=0; n<t; ++n){
 		puntos[n] = new Punto();
+	}
+}
+function magia() {
+	kerbal = ventana2.value;
+	pluma.fillStyle = "white";
+	pluma.fillRect(0, 0, xmax, ymax);
+	record = 120000;
+	con = [];
+	raxas = [];
+	rayas = [];
+	for (var n=0; n<t; ++n){
 		puntos[n].dibujar(n);
 	}
 	var cumu=0;
@@ -169,4 +171,8 @@ function comenzar() {
 	}
 	dfs(kerbal, t*(t - 1)/2, -1);
 	draw(raxas, rayas);
+}
+function puntos_nuevos(){
+	comenzar();
+	magia();
 }
