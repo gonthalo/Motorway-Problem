@@ -16,6 +16,7 @@ var lineas = [];
 var linias = [];
 var raxas = [];
 var rayas = [];
+var ps = [];
 
 function Punto() {
 	this.x = Math.random()*xmax;
@@ -120,6 +121,67 @@ function dfs(m, n, last){
 		}
 	}
 }
+// triangulacion de Delaunay :)
+function cosen(p, q, r){
+	var num = (puntos[p].x - puntos[q].x) * (puntos[r].x - puntos[q].x) + (puntos[p].y - puntos[q].y) * (puntos[r].y - puntos[q].y);
+	num = num/seg(q, p);
+	num = num/seg(q, r);
+	return num;
+}
+function ccw(p, q, r){
+	var disc = (puntos[p].x - puntos[r].x) * (puntos[q].y - puntos[r].y) - (puntos[p].y - puntos[r].y) * (puntos[q].x - puntos[r].x);
+	if (disc > 0){
+		return 1;
+	} else {
+		return -1;
+	}
+}
+function index(j, k){
+	if (j>k){
+		j=j+k;
+		k=j-k;
+		j=j-k;
+	}
+	return j + k*(k - 1)/2;
+}
+function chis4(p, q, r, s){
+	var check = ccw(p, q, r) * ccw(p, q, s) * ccw(p, r, s) * ccw(q, r, s);
+	if (check==1){
+		var d1;
+		var d2;
+		var o;
+		if (ccw(r, p, q) == ccw(s, q, p)){
+			o=q;
+			d1=s;
+			d2=r;
+		} else {
+			if (ccw(q, p, r) == ccw(s, r, p)){
+				o=r;
+				d1=q;
+				d2=s;
+			} else {
+				o=s;
+				d1=q;
+				d2=r;
+			}
+		}
+		if (cosen(o, p, d1)>cosen(d1, d2, o)){
+			lineas[index(o, p)] = -1;
+		} else {
+			lineas[index(d1, d2)] = -1;
+		}
+	}
+}
+function dfd(m, n, last){
+	if (m==0){
+		chis4(ps[0], ps[1], ps[2], ps[3]);
+	} else {
+		for(var i = last + 1; i < n - m + 1; i++) {
+			ps[m - 1] = i;
+			dfd(m - 1, n, i);
+		}
+	}
+}
 function draw(gr1, gr2){
 	if (record==120000){
 		pluma.fillText("No es posible conectar todos los puntos", 2, 40);
@@ -148,8 +210,27 @@ function comenzar() {
 	puntos = [];
 	lineas = [];
 	linias = [];
+	ps = [];
 	for (var n=0; n<t; ++n){
 		puntos[n] = new Punto();
+	}
+	var cumu=0;
+	for (var n=0; n<t; ++n){
+		for (var y=0; y<n; ++y){
+			lineas[cumu] = y;
+			linias[cumu] = n;
+			cumu++;
+		}
+	}
+	if (ventana2.value < 3*t - 5){
+		//triangulamos...despacito...
+		dfd(4, t, -1);
+		for (var n = t*(t-1)/2 - 1; n>=0; n--){
+			if (lineas[n] == -1){
+				lineas.splice(n, 1);
+				linias.splice(n, 1);
+			}
+		}
 	}
 }
 function magia() {
@@ -163,15 +244,7 @@ function magia() {
 	for (var n=0; n<t; ++n){
 		puntos[n].dibujar(n);
 	}
-	var cumu=0;
-	for (var n=0; n<t; ++n){
-		for (var y=0; y<n; ++y){
-			lineas[cumu] = y;
-			linias[cumu] = n;
-			cumu++;
-		}
-	}
-	dfs(kerbal, t*(t - 1)/2, -1);
+	dfs(kerbal, lineas.length, -1);
 	draw(raxas, rayas);
 }
 function puntos_nuevos(){
