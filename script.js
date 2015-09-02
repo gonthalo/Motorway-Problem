@@ -243,11 +243,11 @@ function magia() {
 		ventana2.value = t - 1;
 	}
 	kerbal = ventana2.value;
-	if (kerbal<3*t - 6){
-		triangular;
+	if (kerbal<3*t - 6 && 2*lineas.length = t*(t - 1)){
+		triangular();
 	}
 	if (kerbal>lineas.length){
-		destriangular;
+		destriangular();
 	}
 	pluma.fillStyle = "white";
 	pluma.fillRect(0, 0, xmax, ymax);
