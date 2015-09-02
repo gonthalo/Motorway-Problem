@@ -182,6 +182,25 @@ function dfd(m, n, last){
 		}
 	}
 }
+function triangular(){
+	dfd(4, t, -1);
+	for (var n = t*(t-1)/2 - 1; n>=0; n--){
+		if (lineas[n] == -1){
+			lineas.splice(n, 1);
+			linias.splice(n, 1);
+		}
+	}
+}
+function destriangular(){
+	var cumu=0;
+	for (var n=0; n<t; ++n){
+		for (var y=0; y<n; ++y){
+			lineas[cumu] = y;
+			linias[cumu] = n;
+			cumu++;
+		}
+	}
+}
 function draw(gr1, gr2){
 	if (record==120000){
 		pluma.fillText("No es posible conectar todos los puntos", 2, 40);
@@ -214,27 +233,22 @@ function comenzar() {
 	for (var n=0; n<t; ++n){
 		puntos[n] = new Punto();
 	}
-	var cumu=0;
-	for (var n=0; n<t; ++n){
-		for (var y=0; y<n; ++y){
-			lineas[cumu] = y;
-			linias[cumu] = n;
-			cumu++;
-		}
-	}
-	if (ventana2.value < 3*t - 5){
-		//triangulamos...despacito...
-		dfd(4, t, -1);
-		for (var n = t*(t-1)/2 - 1; n>=0; n--){
-			if (lineas[n] == -1){
-				lineas.splice(n, 1);
-				linias.splice(n, 1);
-			}
-		}
-	}
+	destriangular();
 }
 function magia() {
+	if (2*ventana2.value > t*(t - 1)){
+		ventana2.value = t*(t - 1);
+	}
+	if (ventana2.value < t - 1){
+		ventana2.value = t - 1;
+	}
 	kerbal = ventana2.value;
+	if (kerbal<3*t - 6){
+		triangular;
+	}
+	if (kerbal>lineas.length){
+		destriangular;
+	}
 	pluma.fillStyle = "white";
 	pluma.fillRect(0, 0, xmax, ymax);
 	record = 120000;
