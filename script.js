@@ -237,13 +237,13 @@ function comenzar() {
 }
 function magia() {
 	if (2*ventana2.value > t*(t - 1)){
-		ventana2.value = t*(t - 1);
+		ventana2.value = t*(t - 1)/2;
 	}
 	if (ventana2.value < t - 1){
 		ventana2.value = t - 1;
 	}
-	kerbal = ventana2.value;
-	if (kerbal<3*t - 6 && 2*lineas.length = t*(t - 1)){
+	var kerbal = ventana2.value;
+	if (kerbal<3*t - 6 && 2*lineas.length == t*(t - 1)){
 		triangular();
 	}
 	if (kerbal>lineas.length){
